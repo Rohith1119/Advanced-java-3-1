@@ -1,0 +1,66 @@
+import java.sql.*;
+
+public class EmployeeJDBC {
+
+    public static void main(String[] args) {
+
+        String url = "jdbc:mysql://localhost:3306/employee_db";
+        String user = "root";
+        String password = "Root@123";
+
+        try {
+            // Load Driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            // Create Connection
+            Connection con = DriverManager.getConnection(url, user, password);
+
+            System.out.println("Connected Successfully!");
+
+            // Create Statement
+            Statement stmt = con.createStatement();
+
+            // ---------------- INSERT ----------------
+            String insertQuery = "INSERT INTO employee(id, name, department, salary, email) "
+                    + "VALUES (101, 'John', 'IT', 45000, 'john@example.com')";
+            int insert = stmt.executeUpdate(insertQuery);
+            System.out.println(insert + " Record Inserted");
+
+            // ---------------- UPDATE ----------------
+            String updateQuery = "UPDATE employee SET salary = 50000 WHERE id = 101";
+            int update = stmt.executeUpdate(updateQuery);
+            System.out.println(update + " Record Updated");
+
+            // ---------------- DISPLAY ----------------
+            String selectQuery = "SELECT * FROM employee";
+            ResultSet rs = stmt.executeQuery(selectQuery);
+
+            System.out.println("\nEmployee Records");
+            System.out.println("--------------------------------------------------------------");
+
+            while (rs.next()) {
+                System.out.println(
+                        rs.getInt("id") + "\t" +
+                        rs.getString("name") + "\t" +
+                        rs.getString("department") + "\t" +
+                        rs.getDouble("salary") + "\t" +
+                        rs.getString("email"));
+            }
+
+            // ---------------- DELETE ----------------
+            String deleteQuery = "DELETE FROM employee WHERE id = 101";
+            int delete = stmt.executeUpdate(deleteQuery);
+            System.out.println("\n" + delete + " Record Deleted");
+
+            // Close Resources
+            rs.close();
+            stmt.close();
+            con.close();
+
+            System.out.println("Connection Closed.");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
